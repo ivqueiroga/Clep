@@ -3,7 +3,8 @@ import React from 'react';
 import {data} from '../../utils/data';
 const { colors } = data;
 import { useSelector, useDispatch } from 'react-redux';
-import { FontAwesome5 } from '@expo/vector-icons';
+
+import Button from '../../components/Button';
 
 export default function index() {
   const dispatch = useDispatch();
@@ -15,18 +16,17 @@ export default function index() {
       <Text style={styles.title}>
         C L E P
       </Text>
-      <TouchableOpacity>
-        <FontAwesome5 name="dice" size={24} color="black" />
-        <Text>Jogar</Text>
-      </TouchableOpacity>
+      <View style={styles.actionContainer}>
+        <Button value={'Jogar'} action={console.log('cliquei')} color={colors[3]} shadowColor={colors[4]} name={'dice'}/>
+        <Button value={'Config'} action={console.log('cliquei')} color={colors[3]} shadowColor={colors[4]} name={'cogs'}/>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    alignContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
     height: '100%',
     width: '100%',
@@ -39,5 +39,8 @@ const styles = StyleSheet.create({
     textShadowColor: colors[4],
     textShadowRadius: 2,
     textShadowOffset: {height: 1, width: -1}
+  },
+  actionContainer: {
+    flexDirection: 'row',
   }
 });
