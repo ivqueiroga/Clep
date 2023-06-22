@@ -9,7 +9,7 @@ const headerHeight = Platform.OS === 'android'? StatusBar.currentHeight + 22 : 6
 export default function index() {
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Questões Restantes</Text>
+      <Text style={styles.headerText}>Temas em Jogo:</Text>
     </View>
   );
 };
@@ -18,6 +18,7 @@ export default function index() {
 
 const styles = StyleSheet.create({
   container: {
+    paddingHorizontal: '2%',
     height: headerHeight,
     width: '100%',
     backgroundColor: colors[3],
