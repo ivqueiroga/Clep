@@ -1,104 +1,116 @@
 import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
 import React, {useState, useEffect} from 'react';
-import {data} from '../../utils/data';
-const { colors } = data;
 import { useSelector, useDispatch } from 'react-redux';
+import * as ScreenOrientation from 'expo-screen-orientation';
+import { addTime, subTime, resetToCustomTime, timerControl } from '../../redux/counterSlice';
+import { useDefaultThemes } from '../../redux/themesSlice';
 
 import Button from '../../components/Button';
 
-export default function index() {
+export default function index({navigation}) {
+  const colors = useSelector(state => state.persistedReducer.colorTheme.colors);
   const gameTime = useSelector(state => state.persistedReducer.counter);
   const gameThemes = useSelector(state => state.persistedReducer.themes);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    lockOrientation(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+    return () => lockOrientation(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+  }, []);
+
+  const lockOrientation = async (orientation) => {
+    await ScreenOrientation.lockAsync(orientation);
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>
+    <SafeAreaView style={{...styles.container, backgroundColor: colors[4]}}>
+      <Text style={{...styles.title, color: colors[1], textShadowColor: colors[0]}}>
         CONFIGURAÇÕES
       </Text>
-      <View style={styles.content}>
-        <Text style={styles.contentTitle}>Tempo por rodada</Text>
+      <View style={{...styles.timeContainer, color: colors[1], textShadowColor: colors[0]}}>
+        <Text style={{...styles.contentTitle, color: colors[1], textShadowColor: colors[0]}}>Tempo por rodada</Text>
         <View style={styles.configContentContainer}>
           <Button
+              isHorizontal={false}
               label={false}
               size={20}
-              actionType={'setTime'}
-              action={'subtract'}
-              color={colors[3]}
-              shadowColor={colors[4]}
+              color={colors[1]}
+              shadowColor={colors[0]}
               name={'minus'}
+              onClick={() => dispatch(subTime())}
           />
-          <Text style={styles.input}>
-            {gameTime.isCustomOn ? gameTime.setTime : gameTime.defaultTime}
+          <Text style={{...styles.input, backgroundColor: colors[0],  color: colors[1], textShadowColor: colors[4]}}>
+            {gameTime.setTime}
           </Text>
           <Button
+              isHorizontal={false}
               label={false}
               size={20}
-              actionType={'setTime'}
-              action={'add'}
-              color={colors[3]}
-              shadowColor={colors[4]}
+              color={colors[1]}
+              shadowColor={colors[0]}
               name={'plus'}
+              onClick={() => dispatch(addTime())}
           />
         </View>
         <Button
+              isHorizontal={false}
               label={true}
               size={20}
-              actionType={'resetTime'}
-              action={'reset'}
-              color={colors[3]}
-              shadowColor={colors[4]}
+              color={colors[1]}
+              shadowColor={colors[0]}
               name={'backward'}
-              value={'Resetar'}
+              value={'Reset'}
+              onClick={() => dispatch(resetToCustomTime())}
           />
       </View>
-      <View style={styles.content}>
-        <Text style={styles.contentTitle}>Temas</Text>
+      <View style={{...styles.themeContainer, color: colors[1], textShadowColor: colors[0]}}>
+        <Text style={{...styles.contentTitle, color: colors[1], textShadowColor: colors[0]}}>Temas</Text>
         <View style={styles.configContentContainer}>
           <Button
                 label={true}
                 size={20}
-                actionType={'resetThemes'}
-                action={'reset'}
-                color={colors[3]}
-                shadowColor={colors[4]}
+                color={colors[1]}
+                shadowColor={colors[0]}
                 name={'backward'}
-                value={'Resetar'}
+                value={'Reset'}
+                onClick={() => dispatch(useDefaultThemes())}
             />
-          <Text style={styles.input}>
-          {gameThemes.isCustomOn ? gameThemes.setThemes.length : gameThemes.defaultThemes.length}
+          <Text style={{...styles.input, backgroundColor: colors[0],  color: colors[1], textShadowColor: colors[4]}}>
+          {gameThemes.setThemes.length}
           </Text>
           <Button
+                isHorizontal={false}
                 label={true}
                 size={20}
-                actionType={'resetThemes'}
-                action={'reset'}
-                color={colors[3]}
-                shadowColor={colors[4]}
+                color={colors[1]}
+                shadowColor={colors[0]}
                 name={'wrench'}
                 value={'Editar'}
+                onClick={() => navigation.navigate('themes')}
             />
         </View>
       </View>
-      <View style={styles.configContentContainer}>
+      <View style={styles.navContainer}>
           <Button
+              isHorizontal={false}
               label={true}
-              size={40}
+              size={30}
               value={'Home'}
-              actionType={'navigation'}
-              action={'home'}
-              color={colors[3]}
-              shadowColor={colors[4]}
+              color={colors[1]}
+              shadowColor={colors[0]}
               name={'home'}
+              onClick={() => navigation.navigate('home')}
+              
           />
           <Button
+              isHorizontal={false}
               label={true}
-              size={40}
+              size={30}
               value={'Jogar'}
-              actionType={'navigation'}
-              action={'game'}
-              color={colors[3]}
-              shadowColor={colors[4]}
+              color={colors[1]}
+              shadowColor={colors[0]}
               name={'dice'}
+              onClick={() => navigation.navigate('game')}
           />
         </View>
     </SafeAreaView>
@@ -113,20 +125,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: '100%',
     width: '100%',
-    backgroundColor: colors[1],
   },
   title: {
+    width: '100%',
+    textAlign: 'center',
     fontFamily: 'Orbitron-Bold',
     fontSize: 30,
-    color: colors[3],
-    textShadowColor: colors[4],
-    textShadowRadius: 10,
-    textShadowOffset: {height: 1, width: -1}
+    textShadowRadius: 1,
+    textShadowOffset: {height: 5, width: -5}
   },
   content: {
     justifyContent: 'space-between',
     width: '100%',
-    marginTop: '5%',
+    alignItems: 'center',
+  },
+  timeContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  themeContainer: {
+    width: '100%',
     alignItems: 'center',
   },
   contentTitle: {
@@ -134,11 +152,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Orbitron-Bold',
     fontSize: 18,
-    textShadowColor: colors[4],
-    textShadowRadius: 2,
+    // color: colors[3],
+    // textShadowColor: colors[6],
+    textShadowRadius: 1,
     textShadowOffset: {height: 1, width: -1}
   },
   configContentContainer: {
+    marginVertical: '5%',
+    flexDirection: 'row',
+    width: '80%',
+    justifyContent: 'space-between',
+  },
+  navContainer: {
     marginVertical: '5%',
     flexDirection: 'row',
     width: '80%',
@@ -150,11 +175,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: 80,
     height: 40,
-    backgroundColor: colors[3],
+    // backgroundColor: colors[3],
     fontFamily: 'Orbitron-Bold',
-    color: colors[1],
-    textShadowColor: colors[4],
-    textShadowRadius: 10,
+    // color: colors[1],
+    // textShadowColor: colors[6],
+    textShadowRadius: 1,
     textShadowOffset: {height: 1, width: -1}
   }
 });

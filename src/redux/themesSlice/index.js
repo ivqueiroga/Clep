@@ -1,4 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit';
+import uuid from 'react-native-uuid';
+
+let id = 0
 
 const defaultData = [
   {
@@ -141,36 +144,70 @@ const defaultData = [
     id: 35,
     theme: 'Elemento tabela periódica',
   },
-]
+];
+
+const DATASort = defaultData.sort(function (a, b) {
+  let textA = a.theme.toLowerCase();
+  let textB = b.theme.toLowerCase();
+  return textA.localeCompare(textB)
+});
+
+const SORTER = (arr) => {
+  arr.sort(function (a, b) {
+    let textA = a.theme.toLowerCase();
+    let textB = b.theme.toLowerCase();
+    return textA.localeCompare(textB)
+  });
+  return arr;
+};
 
 export const themesSlice = createSlice({
   name: 'themes',
   initialState: {
-    defaultThemes: defaultData,
+    defaultThemes: DATASort,
+    isGameEngaged: false,
     isDefaultOn: true,
-    setThemes: [],
+    setThemes: DATASort,
+    isModalOn: false,
+    editedTheme: {
+      id: Number,
+      theme: String,
+    },
+    randomTheme: [],
     isCustomOn: false,
   },
   reducers: {
+    engageGame: (state) => {
+        state.isGameEngaged = true;
+    },
     useCustomThemes: (state, {payload}) => {
 
     },
     useDefaultThemes: (state, {payload}) => {
-
+      state.setThemes = DATASort;
     },
-    addCustomTeme: (state, {payload}) => {
-
+    addTheme: (state, {payload}) => {
+      state.setThemes.push({
+        id: uuid.v4(),
+        theme: payload
+      });
+      state.setThemes = SORTER(state.setThemes);
     },
-    editCustomTeme: (state, {payload}) => {
-
+    editTheme: (state, {payload}) => {
+      const OLD = state.setThemes.filter(theme => theme.id !== payload.id);
+      const NEW = OLD.push({id: payload.id, theme: payload.theme});
+      state.setThemes = NEW;
     },
-    deleteCustomTeme: (state, {payload}) => {
-
+    deleteTheme: (state, {payload}) => {
+      state.setThemes = state.setThemes.filter((theme) => theme.id !== payload);
+    },
+    modalToggle: (state, {payload}) => {
+      state.isModalOn = payload;
     },
   },
 });
 
-export const { useCustomThemes, useDefaultThemes, addCustomTeme, editCustomTeme, deleteCustomTeme } = themesSlice.actions
+export const { useThemes, useDefaultThemes, addTheme, editTheme, deleteTheme, engageGame, modalToggle } = themesSlice.actions
 
 export const selectTheme = state => state.curtheme
 

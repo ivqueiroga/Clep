@@ -4,37 +4,25 @@ export const counterSlice = createSlice({
   name: 'counter',
   initialState: {
     defaultTime: 10,
-    isTimerOn: false,
-    setTime: Number,
+    isRunning: false,
+    nextPressed: false,
+    setTime: 10,
     isCustomOn: false,
   },
   reducers: {
     timerControl: (state, {payload}) => {
-      state.isTimerOn = payload;
+      state.isRunning = payload;
+      state.nextPressed = !state.nextPressed;
     },
-    setCustomTime: (state, {payload}) => {
-      state.setTime = payload
-      state.isCustomOn = true;
+    resetToCustomTime: (state) => {
+      state.setTime = state.defaultTime;
     },
-    resetToCustomTime: (state, {payload}) => {
-      state.isCustomOn = false;
+    addTime: (state) => {
+      state.setTime >= 20 ? 20 : state.setTime ++;
     },
-    addTime: (state, {payload}) => {
-      if (state.isCustomOn) {
-        state.setTime >= 50 ? 50 : state.setTime++;
-      } else {
-        state.isCustomOn = true;
-        state.setTime = state.defaultTime + 1;
-      }
+    subTime: (state) => {
+      state.setTime <= 5 ? 5 : state.setTime--;
     },
-    subTime: (state, {payload}) => {
-      if (state.isCustomOn) {
-        state.setTime <= 0 ? 0 : state.setTime--;
-      } else {
-        state.isCustomOn = true;
-        state.setTime = state.defaultTime -1;
-      }
-    }
   },
 });
 

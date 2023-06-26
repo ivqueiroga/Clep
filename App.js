@@ -2,16 +2,13 @@ import 'react-native-gesture-handler';
 import {  StatusBar } from "react-native";
 import React, { useState, useEffect, useCallback } from "react";
 import * as SplashScreen from 'expo-splash-screen';
-import * as Font from 'expo-font';
 import { useFonts } from './src/hooks/useFonts';
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { Provider } from 'react-redux'
+import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './src/redux/store';
 import * as ScreenOrientation from 'expo-screen-orientation';
-
-import Header from "./src/components/Header";
 
 import Home from "./src/screens/Home";
 import Game from "./src/screens/Game";
@@ -29,7 +26,7 @@ export function MyStack() {
     async function prepare() {
       try {
         // Pre-load fonts, make any API calls you need to do here
-        // ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
         await useFonts();
       } catch (e) {
         console.warn(e);
@@ -59,19 +56,19 @@ export function MyStack() {
 
   return (
     <Provider store={store} onLayout={onLayoutRootView()}>
-      <PersistGate loading={null} persistor={persistor} > 
+      <PersistGate loading={null} persistor={persistor} >
         <Stack.Navigator >
           <Stack.Screen name="home" options={{headerShown: false}}>
             {props => <Home {...props} />}
-          </Stack.Screen>
-          <Stack.Screen name="game" options={{headerShown: false}}>
-            {props => <Game {...props} />}
           </Stack.Screen>
           <Stack.Screen name="settings" options={{headerShown: false}}>
             {props => <Settings {...props} />}
           </Stack.Screen>
           <Stack.Screen name="themes" options={{headerShown: false}}>
             {props => <Themes {...props} />}
+          </Stack.Screen>
+          <Stack.Screen name="game" options={{headerShown: false}}>
+            {props => <Game {...props} />}
           </Stack.Screen>
         </Stack.Navigator>
         <StatusBar hidden={true} />

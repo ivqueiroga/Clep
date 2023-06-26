@@ -1,70 +1,119 @@
 import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React, {useEffect, useState} from 'react';
-import {data} from '../../utils/data';
-const { colors } = data;
+import React, {useEffect, useState, useRef} from 'react';
+import { timerControl } from '../../redux/counterSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import * as ScreenOrientation from 'expo-screen-orientation';
-ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+import { Audio } from 'expo-av';
+const HAT_SOUND = '../../assets/audio/Tick.wav';
+const BELL_SOUND = '../../assets/audio/Bell.wav';
+let timerId = () => {};
+let next = () => {};
 
 import Button from '../../components/Button';
 
-export default function index() {
+export default function index({navigation}) {
+  const dispatch = useDispatch();
+  const colors = useSelector(state => state.persistedReducer.colorTheme.colors);
+  const gameTime = useSelector(state => state.persistedReducer.counter);
   const gameThemes = useSelector(state => state.persistedReducer.themes);
-  const [playThemes, setPlayThemes] = useState([]);
   const [randomTheme, setRandomTheme] = useState('Clique em Jogar para Iniciar');
-  const [timer, setTimer] = useState(50);
+  const [sound, setSound] = useState();
+  const defaultTime = gameTime.isCustomOn ? gameTime.setTime : gameTime.defaultTime;
 
-  const themes = () => {
-    if(gameThemes.isDefaultOn) {
-      setPlayThemes(gameThemes.defaultThemes);
-    } else {
-      setPlayThemes(gameThemes.setThemes);
+  const [time, setTime] = useState(defaultTime);
+  const timerRef = useRef(time);
+  const [currentTime, setCurrentTime] = useState(0);
+
+  async function playSound(soundType) {
+    if (soundType === 'hat') {
+      const { sound } = await Audio.Sound.createAsync( require(HAT_SOUND)
+      );
+      setSound(sound);
+      await sound.playAsync();
+    }
+    else {
+      const { sound } = await Audio.Sound.createAsync( require(BELL_SOUND)
+      );
+      setSound(sound);
+      await sound.playAsync();
     };
   };
 
   useEffect(() => {
-    themes();
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-    return () => {
-      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
-    }
-  },[]);
+    return sound
+      ? () => {
+          // console.log('Unloading Sound');
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
+
+  useEffect(() => {
+    lockOrientation(ScreenOrientation.OrientationLock.LANDSCAPE);
+    return () => lockOrientation(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+  }, []);
+
+  const lockOrientation = async (orientation) => {
+    await ScreenOrientation.lockAsync(orientation);
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>
+    <SafeAreaView style={{...styles.container, backgroundColor: colors[4]}}>
+      <Text style={{...styles.title, color: colors[1], textShadowColor: colors[0]}}>
         JOGO
       </Text>
       <View style={styles.gameZoneContainer}>
-        <View style={styles.themeContainer}>
+        <View style={{...styles.themeContainer, backgroundColor: colors[0]}}>
           <Button
+            isHorizontal={false}
+            disabled={gameThemes.isGameEngaged}
             label={true}
             size={30}
-            actionType={'playGame'}
-            action={'play'}
-            color={colors[1]}
+            color={gameThemes.isGameEngaged ? colors[0] : colors[1]}
             shadowColor={colors[4]}
             name={'play'}
             value={'Jogar'}
           />
-          <Text style={styles.content}>
+          <Text style={{...styles.content, color: colors[1], textShadowColor: colors[4]}}>
             {randomTheme}
           </Text>
           <Button
+            isHorizontal={false}
+            disabled={!gameThemes.isGameEngaged}
             label={true}
             size={30}
-            actionType={'playGame'}
-            action={'próximo'}
-            color={colors[1]}
+            color={!gameThemes.isGameEngaged ? colors[0] : colors[1]}
             shadowColor={colors[4]}
             name={'step-forward'}
             value={'Próximo'}
           />
         </View>
         <View style={styles.timeContainer}>
-          <Text style={styles.title}>
-            {timer}
+          <Text style={{...styles.title, color: colors[1], textShadowColor: colors[0]}}>
+            {currentTime} s
           </Text>
+        </View>
+        <View style={styles.configContentContainer}>
+          <Button
+            isHorizontal={false}
+            label={true}
+            size={30}
+            value={'Home'}
+            color={colors[1]}
+            shadowColor={colors[0]}
+            name={'home'}
+            onClick={() => navigation.navigate('home')}
+          />
+          <Button
+            isHorizontal={false}
+            label={true}
+            size={30}
+            value={'Config'}
+            color={colors[1]}
+            shadowColor={colors[0]}
+            name={'cogs'}
+            onClick={() => navigation.navigate('settings')}
+          />
         </View>
       </View>
     </SafeAreaView>
@@ -75,22 +124,23 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: '2%',
     paddingTop: '2%',
+    justifyContent: 'space-between',
+    alignContent: 'space-between',
     alignItems: 'center',
     height: '100%',
     width: '100%',
-    backgroundColor: colors[1],
   },
   gameZoneContainer: {
+    marginTop: '2%',
     height: '100%',
     width: '100%',
+    justifyContent: 'space-between',
   },
   title: {
     fontFamily: 'Orbitron-Bold',
     fontSize: 30,
-    color: colors[3],
-    textShadowColor: colors[4],
-    textShadowRadius: 10,
-    textShadowOffset: {height: 1, width: -1}
+    textShadowRadius: 1,
+    textShadowOffset: {height: 5, width: -5}
   },
   themeContainer: {
     fontFamily: 'Orbitron-Bold',
@@ -100,22 +150,27 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 100,
     fontSize: 18,
-    backgroundColor: colors[2],
     borderRadius: 15,
+    elevation: 30,
+    shadowRadius: 10,
   },
   content: {
     fontFamily: 'Orbitron-Bold',
     fontSize: 20,
-    color: colors[1],
-    // borderWidth: 1,
-    textShadowColor: colors[4],
-    textShadowRadius: 10,
+    textShadowRadius: 1,
     textShadowOffset: {height: 1, width: -1}
   },
   timeContainer: {
-    marginTop: '10%',
+    marginTop: '5%',
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  configContentContainer: {
+    margintop: '5%',
+    height: '35%',
+    // paddingBottom: '10%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 });
