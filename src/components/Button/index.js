@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Dimensions, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTime, subTime, resetToCustomTime, timerControl } from '../../redux/counterSlice';
 import {  engageGame  } from '../../redux/themesSlice';
+
+const { width, height } = Dimensions.get('window');
 
 export default function index(props) {
   const colors = useSelector(state => state.persistedReducer.colorTheme.colors);
@@ -46,26 +48,22 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     textAlign: 'center',
     textAlignVertical: 'center',
-    height: 60,
+    height: height/12,
     width: '90%',
-    borderWidth: 1,
-    borderRadius: 15,
+    borderRadius: height/47,
     elevation: 15,
   },
   btnContainer:{
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 15,
-    height: 40,
+    height: height/14,
+    width: width/4,
   },
   content: {
     textAlignVertical:  'center',
     textAlign: 'center',
     fontFamily: 'Orbitron-Bold',
     textShadowRadius: 1,
-    textShadowOffset: {height: 1, width: -1},
-    // width: '80%',
-    // width: 60,
-    // height: 40,
+    textShadowOffset: {height: height/350, width: -height/350},
   }
 });

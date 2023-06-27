@@ -1,9 +1,11 @@
-import { StyleSheet, Text, Modal, View, TouchableOpacity, TextInput } from 'react-native';
+import { Dimensions, StyleSheet, Text, Modal, View, TouchableOpacity, TextInput } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { modalToggle, addTheme } from '../../redux/themesSlice';
 
 import Button from '../Button';
+
+const { width, height } = Dimensions.get('window');
 
 
 const index = (onConfirm) => {
@@ -35,7 +37,7 @@ const index = (onConfirm) => {
           <Button
             isHorizontal={false}
             label={false}
-            size={30}
+            size={height/24}
             value={'Cancel'}
             color={colors[1]}
             shadowColor={colors[0]}
@@ -45,7 +47,7 @@ const index = (onConfirm) => {
           <Button
             isHorizontal={false}
             label={false}
-            size={30}
+            size={height/24}
             value={'Confirm'}
             color={colors[1]}
             shadowColor={colors[0]}
@@ -68,25 +70,25 @@ container: {
     alignContent: 'center',
     borderRadius: 5,
     paddingHorizontal: '5%',
-    marginTop: '70%',
+    marginTop: height/3,
   },
   content: {
     marginVertical: 40,
     fontFamily: 'Orbitron-Bold',
-    fontSize: 20,
+    fontSize: height/20,
     textShadowRadius: 1,
-    textShadowOffset: {height: 5, width: -5}
+    textShadowOffset: {height: height/140, width: -height/140}
   },
   input: {
     marginTop: '10%',
     width: '100%',
-    height: 60,
+    height: height/11,
     fontFamily: 'Orbitron-Bold',
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: height/35,
     borderRadius: 5,
     textShadowRadius: 1,
-    textShadowOffset: {height: 1, width: -1}
+    textShadowOffset: {height: height/700, width: -height/700}
   },
   inputBtns: {
     flexDirection: 'row',

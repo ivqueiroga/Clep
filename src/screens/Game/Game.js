@@ -1,9 +1,8 @@
-import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React, {useEffect, useState, useRef} from 'react';
-import { timerControl } from '../../redux/counterSlice';
+import { Dimensions, SafeAreaView, View, Text, StyleSheet } from 'react-native'
+import React, {useEffect, useState} from 'react';
 import { setRandomTheme, useThemeData, engageGame } from '../../redux/themesSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import * as ScreenOrientation from 'expo-screen-orientation';
+import { useNavigation } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 const HAT_SOUND = '../../assets/audio/Tick.wav';
 const BELL_SOUND = '../../assets/audio/Bell.wav';
@@ -11,31 +10,20 @@ let timer = () => {};
 
 import Button from '../../components/Button';
 
-export default function index({navigation}) {
-  ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+const { width, height } = Dimensions.get('window');
+const filterW = width > height ? height : width;
+const filterH = width > height ? width: height;
+
+export default function Game() {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const colors = useSelector(state => state.persistedReducer.colorTheme.colors);
   const gameTime = useSelector(state => state.persistedReducer.counter);
   const gameThemes = useSelector(state => state.persistedReducer.themes);
   const [sound, setSound] = useState();
-  const defaultTime = gameTime.isCustomOn ? gameTime.setTime : gameTime.defaultTime;
+  const defaultTime = gameTime.setTime;
   const [initTime, setInitTime] = useState(defaultTime);
   const [timeLeft, setTimeLeft] = useState(initTime);
-  const [orientation, setOrientation] = useState(1);
-
-  const PORTRAIT = ScreenOrientation.OrientationLock.PORTRAIT_UP;
-  const LADSCAPE = ScreenOrientation.OrientationLock.LANDSCAPE;
-
-  const lockOrientation = async (orientation) => {
-    await ScreenOrientation.lockAsync(orientation);
-    const o = await ScreenOrientation.getOrientationAsync();
-    setOrientation(o);
-  };
-
-  useEffect(() => {
-    lockOrientation(LADSCAPE);
-    return () => lockOrientation(LADSCAPE)
-  }, []);
 
   async function playSound(soundType) {
     if (soundType === 'hat') {
@@ -107,7 +95,7 @@ export default function index({navigation}) {
           <Button
             isHorizontal={false}
             label={true}
-            size={30}
+            size={filterH/24}
             color={colors[1]}
             shadowColor={colors[4]}
             name={gameThemes.isGameEngaged ? 'backspace' : 'play'}
@@ -121,7 +109,7 @@ export default function index({navigation}) {
             isHorizontal={false}
             disabled={!gameThemes.isGameEngaged}
             label={true}
-            size={30}
+            size={filterH/24}
             color={!gameThemes.isGameEngaged ? colors[0] : colors[1]}
             shadowColor={colors[4]}
             name={'step-forward'}
@@ -138,7 +126,7 @@ export default function index({navigation}) {
           <Button
             isHorizontal={false}
             label={true}
-            size={30}
+            size={filterH/24}
             value={'Home'}
             color={colors[1]}
             shadowColor={colors[0]}
@@ -149,7 +137,7 @@ export default function index({navigation}) {
           <Button
             isHorizontal={false}
             label={true}
-            size={30}
+            size={filterH/24}
             value={'Config'}
             color={colors[1]}
             shadowColor={colors[0]}
@@ -180,9 +168,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Orbitron-Bold',
-    fontSize: 30,
+    fontSize: filterH/24,
     textShadowRadius: 1,
-    textShadowOffset: {height: 3, width: -3}
+    textShadowOffset: {height: filterH/234, width: -filterH/234}
   },
   themeContainer: {
     fontFamily: 'Orbitron-Bold',
@@ -191,17 +179,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: '2%',
     width: '100%',
-    height: 100,
-    fontSize: 18,
-    borderRadius: 15,
-    elevation: 30,
-    shadowRadius: 10,
+    height: filterH/7,
+    fontSize: filterH/40,
+    borderRadius: filterH/47,
+    shadowRadius: 1,
   },
   content: {
     fontFamily: 'Orbitron-Bold',
-    fontSize: 20,
+    fontSize: filterH/35,
     textShadowRadius: 1,
-    textShadowOffset: {height: 1, width: -1}
+    textShadowOffset: {height: filterH/700, width: -filterH/700}
   },
   timeContainer: {
     marginTop: '5%',
@@ -212,7 +199,6 @@ const styles = StyleSheet.create({
   configContentContainer: {
     margintop: '5%',
     height: '35%',
-    // paddingBottom: '10%',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

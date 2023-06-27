@@ -1,9 +1,12 @@
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import React, {useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { modalToggle } from '../../redux/themesSlice';
 import { deleteTheme } from '../../redux/themesSlice';
 import Button from '../Button';
+
+const { width, height } = Dimensions.get('window');
+const filterW = width > height ? height : width;
+const filterH = width > height ? width: height;
 
 export default function index({item}) {
   const dispatch = useDispatch();
@@ -28,10 +31,6 @@ export default function index({item}) {
     createTwoButtonAlert();
   };
 
-  // const modalHandler = () => {
-  //   dispatch(modalToggle(themeState));
-  // };
-
   return (
     <View style={{...styles.listItemContainer, backgroundColor: colors[1]}}>
       <TouchableOpacity 
@@ -44,7 +43,7 @@ export default function index({item}) {
       <Button
           isHorizontal={false}
           label={false}
-          size={20}
+          size={filterH/35}
           value={'Lixo'}
           color={colors[0]}
           shadowColor={colors[1]}
@@ -62,18 +61,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     alignContent: 'center',
-    borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: filterH/140,
     paddingHorizontal: '5%',
-    marginTop: 10,
+    marginTop: filterH/70,
   },
   content: {
-    height: 40,
+    height: filterH/15,
     fontFamily: 'Orbitron-Bold',
-    fontSize: 18,
+    fontSize: filterH/39,
     textAlignVertical: 'center',
     textShadowRadius: 1,
-    textShadowOffset: {height: 1, width: -1},
-    width: 300,
+    textShadowOffset: {height: filterH/700, width: -filterH/700},
+    width: filterW/1.4,
   },
 });

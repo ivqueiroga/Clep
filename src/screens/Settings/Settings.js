@@ -1,33 +1,22 @@
-import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
-import React, {useState, useEffect} from 'react';
+import { Dimensions, SafeAreaView, View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import * as ScreenOrientation from 'expo-screen-orientation';
-import { addTime, subTime, resetToCustomTime, timerControl } from '../../redux/counterSlice';
+import { useNavigation } from '@react-navigation/native';
+import { addTime, subTime, resetToCustomTime } from '../../redux/counterSlice';
 import { resetToDefault } from '../../redux/themesSlice';
 
 import Button from '../../components/Button';
 
-export default function index({navigation}) {
-  ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+const { width, height } = Dimensions.get('window');
+const filterW = width > height ? height : width;
+const filterH = width > height ? width: height;
+
+export default function Settings() {
+  const navigation = useNavigation();
   const colors = useSelector(state => state.persistedReducer.colorTheme.colors);
   const gameTime = useSelector(state => state.persistedReducer.counter);
   const gameThemes = useSelector(state => state.persistedReducer.themes);
   const dispatch = useDispatch();
-  const [orientation, setOrientation] = useState(1);
-
-  const PORTRAIT = ScreenOrientation.OrientationLock.PORTRAIT_UP;
-
-  const lockOrientation = async (orientation) => {
-    await ScreenOrientation.lockAsync(orientation);
-    const o = await ScreenOrientation.getOrientationAsync();
-    setOrientation(o);
-  };
-
-  useEffect(() => {
-    lockOrientation(PORTRAIT);
-    return () => lockOrientation(PORTRAIT)
-  }, []);
-  
 
   return (
     <SafeAreaView style={{...styles.container, backgroundColor: colors[4]}}>
@@ -52,7 +41,7 @@ export default function index({navigation}) {
           <Button
               isHorizontal={false}
               label={false}
-              size={20}
+              size={filterH/24}
               color={colors[1]}
               shadowColor={colors[0]}
               name={'plus'}
@@ -62,7 +51,7 @@ export default function index({navigation}) {
         <Button
               isHorizontal={false}
               label={true}
-              size={20}
+              size={filterH/24}
               color={colors[1]}
               shadowColor={colors[0]}
               name={'backward'}
@@ -75,7 +64,7 @@ export default function index({navigation}) {
         <View style={styles.configContentContainer}>
           <Button
                 label={true}
-                size={20}
+                size={filterH/24}
                 color={colors[1]}
                 shadowColor={colors[0]}
                 name={'backward'}
@@ -88,7 +77,7 @@ export default function index({navigation}) {
           <Button
                 isHorizontal={false}
                 label={true}
-                size={20}
+                size={filterH/24}
                 color={colors[1]}
                 shadowColor={colors[0]}
                 name={'wrench'}
@@ -101,7 +90,7 @@ export default function index({navigation}) {
           <Button
               isHorizontal={false}
               label={true}
-              size={30}
+              size={filterW/13}
               value={'Home'}
               color={colors[1]}
               shadowColor={colors[0]}
@@ -112,7 +101,7 @@ export default function index({navigation}) {
           <Button
               isHorizontal={false}
               label={true}
-              size={30}
+              size={filterW/13}
               value={'Jogar'}
               color={colors[1]}
               shadowColor={colors[0]}
@@ -137,9 +126,9 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
     fontFamily: 'Orbitron-Bold',
-    fontSize: 30,
+    fontSize: filterH/24,
     textShadowRadius: 1,
-    textShadowOffset: {height: 3, width: -3}
+    textShadowOffset: {height: filterH/234, width: -filterH/234}
   },
   content: {
     justifyContent: 'space-between',
@@ -158,17 +147,17 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
     fontFamily: 'Orbitron-Bold',
-    fontSize: 18,
-    // color: colors[3],
-    // textShadowColor: colors[6],
+    fontSize: filterH/30,
     textShadowRadius: 1,
-    textShadowOffset: {height: 1, width: -1}
+    textShadowOffset: {height: filterH/234, width: -filterH/234}
   },
   configContentContainer: {
     marginVertical: '5%',
     flexDirection: 'row',
     width: '80%',
+    height: 'auto',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   navContainer: {
     marginVertical: '5%',
@@ -179,14 +168,13 @@ const styles = StyleSheet.create({
   input: {
     textAlign: 'center',
     textAlignVertical: 'center',
-    borderRadius: 5,
-    width: 80,
-    height: 40,
-    // backgroundColor: colors[3],
+    borderRadius: filterH/140,
+    width: filterH/8.75,
+    height: filterH/17.5,
+    fontSize: filterH/30,
     fontFamily: 'Orbitron-Bold',
-    // color: colors[1],
-    // textShadowColor: colors[6],
     textShadowRadius: 1,
-    textShadowOffset: {height: 1, width: -1}
+    textShadowOffset: {height: filterH/500, width: -filterH/500},
+    elevation: 15,
   }
 });

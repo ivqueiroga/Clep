@@ -1,31 +1,32 @@
 import 'react-native-gesture-handler';
-import {  StatusBar } from "react-native";
+import { Dimensions, StatusBar } from "react-native";
 import React, { useState, useEffect, useCallback } from "react";
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from './src/hooks/useFonts';
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Provider } from 'react-redux';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './src/redux/store';
-import * as ScreenOrientation from "expo-screen-orientation";
 
-import Home from "./src/screens/Home";
-import Game from "./src/screens/Game";
-import Settings from "./src/screens/Settings";
-import Themes from "./src/screens/Themes";
+import Home from "./src/screens/Home/Home";
+import Game from "./src/screens/Game/Game";
+import Settings from "./src/screens/Settings/Settings";
+import Themes from "./src/screens/Themes/Themes";
 
 const Stack = createStackNavigator();
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 export function MyStack() {
-  const [appIsReady, setAppIsReady] = useState(false);  
+  const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
     async function prepare() {
       try {
         // Pre-load fonts, make any API calls you need to do here
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT); // Define a orientação como retrato (portrait)
         await useFonts();
       } catch (e) {
         console.warn(e);
@@ -36,6 +37,10 @@ export function MyStack() {
     }
 
     prepare();
+
+    return () => {
+      ScreenOrientation.unlockAsync(); // Libera todas as orientações ao desmontar a tela
+    };
   }, []);
 
   const onLayoutRootView = useCallback(async () => {
@@ -57,18 +62,78 @@ export function MyStack() {
     <Provider store={store} onLayout={onLayoutRootView()}>
       <PersistGate loading={null} persistor={persistor} >
         <Stack.Navigator >
-          <Stack.Screen name="home" options={{headerShown: false, orientation: "portrait_up", unmountOnBlur: true }}>
-            {props => <Home {...props} />}
-          </Stack.Screen>
-          <Stack.Screen name="settings" options={{headerShown: false, orientation: "portrait_up", unmountOnBlur: true }}>
-            {props => <Settings {...props} />}
-          </Stack.Screen>
-          <Stack.Screen name="themes" options={{headerShown: false, orientation: "portrait_up", unmountOnBlur: true }}>
-            {props => <Themes {...props} />}
-          </Stack.Screen>
-          <Stack.Screen name="game" options={{headerShown: false, orientation: "landscape", unmountOnBlur: true }}>
-            {props => <Game {...props} />}
-          </Stack.Screen>
+          <Stack.Screen 
+            component={Home}
+            name="home"
+            options={{
+              headerShown: false,
+              gestureEnabled: false,
+            }}
+            listeners={() => ({
+              focus: () => {
+                ScreenOrientation.lockAsync(
+                  ScreenOrientation.OrientationLock.PORTRAIT
+                );
+              },
+              blur: () => {
+                ScreenOrientation.unlockAsync();
+              },
+            })}
+          />
+          <Stack.Screen
+            component={Settings}
+            name="settings"
+            options={{
+              headerShown: false,
+              gestureEnabled: false,
+            }}
+            listeners={() => ({
+              focus: () => {
+                ScreenOrientation.lockAsync(
+                  ScreenOrientation.OrientationLock.PORTRAIT
+                );
+              },
+              blur: () => {
+                ScreenOrientation.unlockAsync();
+              },
+            })}
+          />
+          <Stack.Screen
+            component={Themes}
+            name="themes"
+            options={{
+              headerShown: false,
+              gestureEnabled: false,
+            }}
+            listeners={() => ({
+              focus: () => {
+                ScreenOrientation.lockAsync(
+                  ScreenOrientation.OrientationLock.PORTRAIT
+                );
+              },
+              blur: () => {
+                ScreenOrientation.unlockAsync();
+              },
+            })}
+          />
+          <Stack.Screen
+            component={Game}
+            name="game"
+            options={{
+              headerShown: false,
+              gestureEnabled: false,
+            }}
+            listeners={() => ({
+              focus: () => {
+                ScreenOrientation.lockAsync(
+                  ScreenOrientation.OrientationLock.LANDSCAPE
+                );
+              },
+              blur: () => {
+                ScreenOrientation.unlockAsync();
+              },
+            })}
+          />
         </Stack.Navigator>
         <StatusBar hidden={true} />
       </PersistGate>

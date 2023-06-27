@@ -21,13 +21,19 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ivqueiroga.Clep"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "androidNavigationBar": {
       "visible": "immersive"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "70b3a423-c58f-46ae-9bc8-dae3317a6452"
       }
+    }
   }
 }
