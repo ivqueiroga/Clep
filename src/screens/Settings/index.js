@@ -3,24 +3,31 @@ import React, {useState, useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { addTime, subTime, resetToCustomTime, timerControl } from '../../redux/counterSlice';
-import { useDefaultThemes } from '../../redux/themesSlice';
+import { resetToDefault } from '../../redux/themesSlice';
 
 import Button from '../../components/Button';
 
 export default function index({navigation}) {
+  ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
   const colors = useSelector(state => state.persistedReducer.colorTheme.colors);
   const gameTime = useSelector(state => state.persistedReducer.counter);
   const gameThemes = useSelector(state => state.persistedReducer.themes);
   const dispatch = useDispatch();
+  const [orientation, setOrientation] = useState(1);
 
-  useEffect(() => {
-    lockOrientation(ScreenOrientation.OrientationLock.PORTRAIT_UP);
-    return () => lockOrientation(ScreenOrientation.OrientationLock.PORTRAIT_UP);
-  }, []);
+  const PORTRAIT = ScreenOrientation.OrientationLock.PORTRAIT_UP;
 
   const lockOrientation = async (orientation) => {
     await ScreenOrientation.lockAsync(orientation);
+    const o = await ScreenOrientation.getOrientationAsync();
+    setOrientation(o);
   };
+
+  useEffect(() => {
+    lockOrientation(PORTRAIT);
+    return () => lockOrientation(PORTRAIT)
+  }, []);
+  
 
   return (
     <SafeAreaView style={{...styles.container, backgroundColor: colors[4]}}>
@@ -73,10 +80,10 @@ export default function index({navigation}) {
                 shadowColor={colors[0]}
                 name={'backward'}
                 value={'Reset'}
-                onClick={() => dispatch(useDefaultThemes())}
+                onClick={() => dispatch(resetToDefault())}
             />
           <Text style={{...styles.input, backgroundColor: colors[0],  color: colors[1], textShadowColor: colors[4]}}>
-          {gameThemes.setThemes.length}
+          {gameThemes.themeData.length}
           </Text>
           <Button
                 isHorizontal={false}
@@ -132,7 +139,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Orbitron-Bold',
     fontSize: 30,
     textShadowRadius: 1,
-    textShadowOffset: {height: 5, width: -5}
+    textShadowOffset: {height: 3, width: -3}
   },
   content: {
     justifyContent: 'space-between',

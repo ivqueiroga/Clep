@@ -164,7 +164,7 @@ const SORTER = (arr) => {
 export const themesSlice = createSlice({
   name: 'themes',
   initialState: {
-    defaultThemes: DATASort,
+    themeData: DATASort,
     isGameEngaged: false,
     isDefaultOn: true,
     setThemes: DATASort,
@@ -173,25 +173,29 @@ export const themesSlice = createSlice({
       id: Number,
       theme: String,
     },
-    randomTheme: [],
+    randomTheme: {
+      id: Number,
+      theme: 'Clique em Jogar para Iniciar'
+    },
     isCustomOn: false,
   },
   reducers: {
-    engageGame: (state) => {
-        state.isGameEngaged = true;
+    engageGame: (state, {payload}) => {
+        state.isGameEngaged = payload;
     },
-    useCustomThemes: (state, {payload}) => {
-
+    resetToDefault: (state, {payload}) => {
+      state.themeData = DATASort;
     },
-    useDefaultThemes: (state, {payload}) => {
-      state.setThemes = DATASort;
+    useThemeData: (state) => {
+      state.setThemes = state.themeData;
     },
     addTheme: (state, {payload}) => {
-      state.setThemes.push({
+      const FirstToUp = payload.charAt(0).toUpperCase() + payload.slice(1)
+      state.themeData.push({
         id: uuid.v4(),
-        theme: payload
+        theme: FirstToUp
       });
-      state.setThemes = SORTER(state.setThemes);
+      state.setThemes = SORTER(state.themeData);
     },
     editTheme: (state, {payload}) => {
       const OLD = state.setThemes.filter(theme => theme.id !== payload.id);
@@ -199,15 +203,25 @@ export const themesSlice = createSlice({
       state.setThemes = NEW;
     },
     deleteTheme: (state, {payload}) => {
-      state.setThemes = state.setThemes.filter((theme) => theme.id !== payload);
+      state.themeData = state.themeData.filter((theme) => theme.id !== payload);
     },
     modalToggle: (state, {payload}) => {
       state.isModalOn = payload;
     },
+    setRandomTheme: (state) => {
+      if (state.setThemes.length === 0 && state.isGameEngaged) {
+        state.randomTheme.id = null;
+        state.randomTheme.theme = 'Jogo Encerrado';
+        } else {
+          const RANGE = Math.floor(Math.random() * state.setThemes.length);
+          state.randomTheme = state.setThemes[RANGE];
+          state.setThemes = state.setThemes.filter((theme) => theme.id !== state.randomTheme.id);
+      }
+    },
   },
 });
 
-export const { useThemes, useDefaultThemes, addTheme, editTheme, deleteTheme, engageGame, modalToggle } = themesSlice.actions
+export const { useThemes, useThemeData, addTheme, editTheme, deleteTheme, engageGame, modalToggle, setRandomTheme, resetToDefault } = themesSlice.actions
 
 export const selectTheme = state => state.curtheme
 

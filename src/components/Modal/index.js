@@ -20,6 +20,7 @@ const index = (onConfirm) => {
     onConfirm;
     dispatch(addTheme(state));
     dispatch(modalToggle(false));
+    setState('');
   }
 
   return (
@@ -34,7 +35,7 @@ const index = (onConfirm) => {
           <Button
             isHorizontal={false}
             label={false}
-            size={20}
+            size={30}
             value={'Cancel'}
             color={colors[1]}
             shadowColor={colors[0]}
@@ -44,7 +45,7 @@ const index = (onConfirm) => {
           <Button
             isHorizontal={false}
             label={false}
-            size={20}
+            size={30}
             value={'Confirm'}
             color={colors[1]}
             shadowColor={colors[0]}

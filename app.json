@@ -1,5 +1,6 @@
 {
   "expo": {
+    "orientation": "portrait",
     "name": "Clep",
     "slug": "Clep",
     "version": "1.0.0",

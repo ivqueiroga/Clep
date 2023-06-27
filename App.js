@@ -8,7 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './src/redux/store';
-import * as ScreenOrientation from 'expo-screen-orientation';
+import * as ScreenOrientation from "expo-screen-orientation";
 
 import Home from "./src/screens/Home";
 import Game from "./src/screens/Game";
@@ -26,7 +26,6 @@ export function MyStack() {
     async function prepare() {
       try {
         // Pre-load fonts, make any API calls you need to do here
-        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
         await useFonts();
       } catch (e) {
         console.warn(e);
@@ -58,16 +57,16 @@ export function MyStack() {
     <Provider store={store} onLayout={onLayoutRootView()}>
       <PersistGate loading={null} persistor={persistor} >
         <Stack.Navigator >
-          <Stack.Screen name="home" options={{headerShown: false}}>
+          <Stack.Screen name="home" options={{headerShown: false, orientation: "portrait_up", unmountOnBlur: true }}>
             {props => <Home {...props} />}
           </Stack.Screen>
-          <Stack.Screen name="settings" options={{headerShown: false}}>
+          <Stack.Screen name="settings" options={{headerShown: false, orientation: "portrait_up", unmountOnBlur: true }}>
             {props => <Settings {...props} />}
           </Stack.Screen>
-          <Stack.Screen name="themes" options={{headerShown: false}}>
+          <Stack.Screen name="themes" options={{headerShown: false, orientation: "portrait_up", unmountOnBlur: true }}>
             {props => <Themes {...props} />}
           </Stack.Screen>
-          <Stack.Screen name="game" options={{headerShown: false}}>
+          <Stack.Screen name="game" options={{headerShown: false, orientation: "landscape", unmountOnBlur: true }}>
             {props => <Game {...props} />}
           </Stack.Screen>
         </Stack.Navigator>

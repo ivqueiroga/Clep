@@ -23,7 +23,7 @@ export default function index(props) {
   } = props;
 
   return (
-    <TouchableOpacity style={isHorizontal 
+    <TouchableOpacity name={name} style={isHorizontal 
       ? {...styles.btnContainerHori, backgroundColor: colors[1], shadowColor: colors[1]} 
       : styles.btnContainer
     } onPress={onClick} disabled={disabled}>
@@ -39,8 +39,9 @@ export default function index(props) {
 
 const styles = StyleSheet.create({
   btnContainerHori: {
+    paddingHorizontal: '5%',
     flexDirection: 'row-reverse',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
     alignContent: 'center',
     textAlign: 'center',

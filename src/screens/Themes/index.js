@@ -2,7 +2,7 @@ import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, FlatList } from
 import React, {useEffect, useState} from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { modalToggle } from '../../redux/themesSlice';
+import { modalToggle, addTheme } from '../../redux/themesSlice';
 import * as ScreenOrientation from 'expo-screen-orientation';
 
 import Button from '../../components/Button';
@@ -10,20 +10,26 @@ import ListItem from '../../components/ListItem';
 import Modal from '../../components/Modal';
 
 export default function index({navigation}) {
+  ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
   const dispatch = useDispatch();
   const gameThemes = useSelector(state => state.persistedReducer.themes);
   const colors = useSelector(state => state.persistedReducer.colorTheme.colors);
   const isModalOn = useSelector(state => state.persistedReducer.themes.isModalOn);
-  const DATA = gameThemes.setThemes;
+  const DATA = gameThemes.themeData;
+  const [orientation, setOrientation] = useState(1);
 
-  useEffect(() => {
-    lockOrientation(ScreenOrientation.OrientationLock.PORTRAIT_UP);
-    return () => lockOrientation(ScreenOrientation.OrientationLock.PORTRAIT_UP);
-  }, []);
+  const PORTRAIT = ScreenOrientation.OrientationLock.PORTRAIT_UP;
 
   const lockOrientation = async (orientation) => {
     await ScreenOrientation.lockAsync(orientation);
+    const o = await ScreenOrientation.getOrientationAsync();
+    setOrientation(o);
   };
+
+  useEffect(() => {
+    lockOrientation(PORTRAIT);
+    return () => lockOrientation(PORTRAIT)
+  }, []);
   
   return (
     <SafeAreaView style={{...styles.container, backgroundColor: colors[4]}}>
@@ -48,6 +54,7 @@ export default function index({navigation}) {
               color={colors[1]}
               shadowColor={colors[0]}
               name={'plus'}
+              action={(e) => dispatch(addTheme(e))}
               onClick={() => dispatch(modalToggle(true))}
               
           />
@@ -91,7 +98,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Orbitron-Bold',
     fontSize: 30,
     textShadowRadius: 1,
-    textShadowOffset: {height: 5, width: -5}
+    textShadowOffset: {height: 3, width: -3}
   },
   contentContainer: {
     height: '70%',
