@@ -34,10 +34,8 @@ Contributions to the CLEP Game Companion App are welcome! If you have any sugges
 ## License
 
 The CLEP Game Companion App is licensed under the [CC BY-NC-ND License].
----
 
 CC BY-NC-ND License
--------------------
 
 ```
 Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)
