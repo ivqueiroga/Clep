@@ -1,6 +1,8 @@
 # CLEP Game Companion App
 
-<img src="https://github.com/ivqueiroga/Clep/blob/master/assets/icon.png" alt="Clep" width="300">
+<p align="center">
+  <img src="https://github.com/ivqueiroga/Clep/blob/master/assets/icon.png" alt="Clep" width="300">
+</p>
 
 Welcome to the CLEP Game Companion App! This mobile application is designed to enhance your gaming experience for the CLEP tabletop game. With this app, you can access various features and tools that will help you keep track of game progress, manage game resources, and provide a more immersive gaming experience for players.
 
