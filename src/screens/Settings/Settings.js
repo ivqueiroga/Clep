@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { addTime, subTime, resetToCustomTime } from '../../redux/counterSlice';
-import { resetToDefault } from '../../redux/themesSlice';
+import { resetToDefault, emptyThems } from '../../redux/themesSlice';
 
 import Button from '../../components/Button';
 
@@ -85,6 +85,16 @@ export default function Settings() {
                 onClick={() => navigation.navigate('themes')}
             />
         </View>
+        <Button
+              isHorizontal={false}
+              label={true}
+              size={filterH/24}
+              color={colors[1]}
+              shadowColor={colors[0]}
+              name={'circle'}
+              value={'Zerar'}
+              onClick={() => dispatch(emptyThems())}
+          />
       </View>
       <View style={styles.navContainer}>
           <Button

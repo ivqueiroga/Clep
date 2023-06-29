@@ -3,7 +3,7 @@ import { Dimensions, StatusBar } from "react-native";
 import React, { useState, useEffect, useCallback } from "react";
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from './src/hooks/useFonts';
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, DefaultTheme  } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Provider } from 'react-redux';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -143,7 +143,7 @@ export function MyStack() {
 
 export default function App() {
   return (
-  <NavigationContainer>
+  <NavigationContainer theme={DefaultTheme}>
     <MyStack />
   </NavigationContainer>
   );

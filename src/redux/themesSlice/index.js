@@ -183,8 +183,13 @@ export const themesSlice = createSlice({
     engageGame: (state, {payload}) => {
         state.isGameEngaged = payload;
     },
-    resetToDefault: (state, {payload}) => {
+    resetToDefault: (state) => {
       state.themeData = DATASort;
+      state.setThemes = state.themeData;
+    },
+    emptyThems: (state) => {
+      state.themeData.length = 0;
+      state.setThemes = state.themeData;
     },
     useThemeData: (state) => {
       state.setThemes = state.themeData;
@@ -221,7 +226,7 @@ export const themesSlice = createSlice({
   },
 });
 
-export const { useThemes, useThemeData, addTheme, editTheme, deleteTheme, engageGame, modalToggle, setRandomTheme, resetToDefault } = themesSlice.actions
+export const { useThemes, useThemeData, addTheme, editTheme, deleteTheme, engageGame, modalToggle, setRandomTheme, resetToDefault, emptyThems } = themesSlice.actions
 
 export const selectTheme = state => state.curtheme
 

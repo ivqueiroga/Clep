@@ -49,13 +49,14 @@ export default function Game() {
   }, [sound]);
 
   const startTimer = () => {
+    if (gameThemes.themeData.length != 0){
     timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev > 1 && prev < 5) playSound('hat');
         if (prev === 1 ) playSound('bell');
         return prev -= 1;
       });
-    }, 1000)
+    }, 1000)}
   };
 
   useEffect(() => {
